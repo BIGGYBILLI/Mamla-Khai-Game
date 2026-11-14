@@ -8,7 +8,12 @@ No downloads, no frameworks, no build step — plain HTML, CSS and ES modules on
 2D canvas with a pseudo-3D (Out Run style) road renderer. Runs on phones, tablets
 and desktops; keyboard, touch buttons or both.
 
-## Run it
+## Play it
+
+**Live:** <https://biggybilli.github.io/Mamla-Khai-Game/> — hosted on GitHub Pages
+from this repo's `main` branch.
+
+To run it locally, serve the folder over HTTP (ES modules do not load from `file://`):
 
 ```bash
 npm run dev            # http://127.0.0.1:5178
@@ -16,9 +21,9 @@ npm run dev            # http://127.0.0.1:5178
 PORT=5199 npm run dev
 ```
 
-Any static file server works (`python -m http.server`, nginx, a Worker, …). The
-only server in the repo is `dev-server.mjs`, a 40-line static file server used for
-local development.
+There is no install step and no dependencies. Any static file server works
+(`python -m http.server`, nginx, a Worker, …); `dev-server.mjs` is the 40-line
+server used for local development.
 
 ## How to play
 
