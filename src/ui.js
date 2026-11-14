@@ -5,6 +5,10 @@ import { drawVehicle, previewWidth } from './vehicles.js';
 
 const $ = (id) => document.getElementById(id);
 
+// True when the primary input is a finger, not a keyboard/mouse.
+const isCoarsePointer = () =>
+  !!(window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches);
+
 export class UI {
   constructor({ onRide, onAgain, onMenu, onMute, onPause, onResume, onChangeVehicle }) {
     this.onRide = onRide;
@@ -103,6 +107,7 @@ export class UI {
       btn.classList.toggle('active', btn.dataset.lang === getLang());
     }
 
+    this.syncControls();
     this.buildVehicleCards();
     this.renderOptions();
     this.refreshSetupUi();
@@ -149,12 +154,47 @@ export class UI {
     this.el.finesPanel.classList.remove('open');
   }
 
+  // The start-menu legend names the controls the device actually has: keys on a
+  // keyboard, the on-screen dock on a phone.
+  syncControls() {
+    const foot = $('menu-foot');
+    if (!foot) return;
+    foot.innerHTML = '';
+    const row = (chips, labelKey) => {
+      const span = document.createElement('span');
+      for (const chip of chips) {
+        const k = document.createElement('kbd');
+        k.textContent = chip;
+        span.appendChild(k);
+      }
+      if (labelKey) {
+        const label = document.createElement('span');
+        label.textContent = t(labelKey);
+        span.appendChild(label);
+      }
+      foot.appendChild(span);
+    };
+    if (isCoarsePointer()) {
+      row(['◀', '▶'], 'navSteer');
+      row([t('navGas')]);
+      row([t('navBrake')]);
+    } else {
+      row(['←', '→'], 'navSteer');
+      row(['↑'], 'navGas');
+      row(['↓'], 'navBrake');
+      const note = document.createElement('span');
+      note.className = 'hide-sm';
+      note.textContent = t('navTouch');
+      foot.appendChild(note);
+    }
+  }
+
   // Phones have no Esc key, so point the hint at the resume button there.
   syncPauseHint() {
     const hint = this.el.pauseOverlay.querySelector('[data-i18n^="pauseHint"]');
     if (!hint) return;
     // media query only: a touchscreen laptop with a trackpad still has Esc
-    const coarse = !!(window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches);
+    const coarse = isCoarsePointer();
     hint.dataset.i18n = coarse ? 'pauseHintTouch' : 'pauseHint';
     hint.textContent = t(hint.dataset.i18n);
   }
