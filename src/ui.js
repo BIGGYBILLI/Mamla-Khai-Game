@@ -56,6 +56,7 @@ export class UI {
 
     this.bind();
     this.applyLanguage();
+    this.syncPauseHint();
   }
 
   bind() {
@@ -148,7 +149,18 @@ export class UI {
     this.el.finesPanel.classList.remove('open');
   }
 
+  // Phones have no Esc key, so point the hint at the resume button there.
+  syncPauseHint() {
+    const hint = this.el.pauseOverlay.querySelector('[data-i18n^="pauseHint"]');
+    if (!hint) return;
+    // media query only: a touchscreen laptop with a trackpad still has Esc
+    const coarse = !!(window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches);
+    hint.dataset.i18n = coarse ? 'pauseHintTouch' : 'pauseHint';
+    hint.textContent = t(hint.dataset.i18n);
+  }
+
   showPause() {
+    this.syncPauseHint();
     this.el.pauseOverlay.classList.remove('hidden');
   }
 
