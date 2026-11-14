@@ -1,0 +1,20 @@
+# Local tooling state (Freebuff workspace marker — never publish)
+.freebuff/
+
+# Dev / verification artifacts
+shot-*.png
+shots/
+
+# Reference photos kept for art reference only; the game draws everything procedurally
+300 ft pics/
+
+# OS junk
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Dependencies / logs (the game has none, but just in case)
+node_modules/
+npm-debug.log*
+.env
+.env.*

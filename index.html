@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#05050d" />
+    <meta name="description" content="Mamla Khai — drive 300 Feet, Dhaka at night, break every rule and watch the fine calculator climb." />
+    <title>মামলা খাই — 300 Feet, Dhaka</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <canvas id="game" aria-label="3D night road view of 300 Feet, Dhaka"></canvas>
+
+    <div class="lang-switch" id="lang-switch">
+      <button type="button" data-lang="bn">বাংলা</button>
+      <button type="button" data-lang="en">English</button>
+    </div>
+
+    <!-- ============ MENU ============ -->
+    <section id="screen-menu" class="screen menu">
+      <div class="menu-inner">
+        <div class="brand">
+          <div class="brand-title" data-i18n="brand">মামলা খাই</div>
+        </div>
+        <p class="brand-sub" data-i18n="brandSub">৩০০ ফুট · ঢাকা · রাত ১২:৪০</p>
+        <p class="tagline" data-i18n="tagline">
+          ঢাকার সবচেয়ে চওড়া রাস্তা, আর সবচেয়ে কড়া চেকপোস্ট। নিয়ম ভাঙুন, পুলিশ ফাঁকি দিন, আর পাশের ক্যালকুলেটরে জরিমানা বাড়তে দেখুন।
+        </p>
+        <button id="btn-play" class="btn primary big" data-i18n="start">ইঞ্জিন স্টার্ট</button>
+        <div class="menu-foot">
+          <span><kbd>←</kbd><kbd>→</kbd> <span data-i18n="navSteer">স্টিয়ার</span></span>
+          <span><kbd>↑</kbd> <span data-i18n="navGas">গ্যাস</span></span>
+          <span><kbd>↓</kbd> <span data-i18n="navBrake">ব্রেক</span></span>
+          <span class="hide-sm" data-i18n="navTouch">মোবাইলে টাচ কন্ট্রোল</span>
+        </div>
+      </div>
+      <div class="menu-credit" data-i18n="credit">৩০০ ফুট রোডে এক রাতের যাত্রা · ফ্যান-মেড আর্কেড</div>
+    </section>
+
+    <!-- ============ SETUP ============ -->
+    <section id="screen-setup" class="screen setup hidden">
+      <div class="setup-inner">
+        <header class="setup-head">
+          <button id="btn-back" class="link-btn">← <span data-i18n="back">ফিরে যান</span></button>
+          <h2 data-i18n="setupTitle">গাড়ি বেছে নিন</h2>
+          <p data-i18n="setupSub">নিচের প্রতিটি সিদ্ধান্তই একটা আইন — যেটা আপনি ভাঙতে পারেন।</p>
+        </header>
+
+        <div class="vehicle-row" id="vehicle-cards"></div>
+
+        <div class="setup-grid">
+          <div class="options" id="options"></div>
+          <div class="preview-box">
+            <canvas id="vehicle-preview" width="420" height="240"></canvas>
+            <div class="preview-caption" id="preview-caption"></div>
+          </div>
+        </div>
+
+        <div class="setup-actions">
+          <button id="btn-ride" class="btn primary big" data-i18n="ride">হাইটে যাই</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HUD ============ -->
+    <div id="hud" class="hud hidden">
+      <div class="hud-top">
+        <div class="speed-cluster">
+          <div class="speed"><b id="speed-val">0</b><span data-i18n="unitKmh">কিমি/ঘণ্টা</span></div>
+          <div class="limit-chip"><span data-i18n="limit">সীমা</span> <b id="limit-val">80</b></div>
+          <div class="dist-chip"><b id="dist-val">0</b> <span data-i18n="unitMeter">মি</span></div>
+          <div class="life">
+            <span class="life-label" data-i18n="life">গাড়ির অবস্থা</span>
+            <div class="life-track"><i id="life-fill" class="life-fill"></i></div>
+          </div>
+        </div>
+
+        <div class="hud-center">
+          <div id="warn" class="warn hidden">
+            <span class="warn-dot"></span>
+            <b id="warn-text">চেকপোস্ট</b>
+            <span id="warn-dist">০ মি</span>
+          </div>
+          <div id="toasts" class="toasts"></div>
+        </div>
+
+        <div class="hud-right">
+          <button id="btn-pause" class="icon-btn pause-btn" aria-label="Pause"><i></i><i></i></button>
+          <button id="btn-sound" class="icon-btn" aria-label="Toggle sound">♪</button>
+          <button id="btn-fines" class="icon-btn only-sm" aria-label="Toggle fine list">৳</button>
+        </div>
+      </div>
+
+      <aside id="fines" class="fines">
+        <div class="fines-head">
+          <span class="dot"></span>
+          <span data-i18n="calculator">জরিমানা ক্যালকুলেটর</span>
+        </div>
+        <ul id="fine-list"></ul>
+        <div class="fines-total"><span data-i18n="total">মোট</span><b id="fine-total">৳ ০</b></div>
+        <div class="fines-note" id="fine-note">চালান বাকি · এখনও ধরা পড়েননি</div>
+      </aside>
+
+      <div class="touch" id="touch">
+        <div class="pad">
+          <button data-key="left" aria-label="Steer left">◀</button>
+          <button data-key="right" aria-label="Steer right">▶</button>
+        </div>
+        <div class="pedals">
+          <button data-key="brake" aria-label="Brake" data-i18n="navBrake">ব্রেক</button>
+          <button data-key="gas" aria-label="Accelerate" data-i18n="navGas">গ্যাস</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PAUSE ============ -->
+    <section id="screen-pause" class="screen pause hidden">
+      <div class="pause-card">
+        <div class="pause-icon" aria-hidden="true"><i></i><i></i></div>
+        <h2 data-i18n="pausedTitle">খেলা থামানো</h2>
+        <p data-i18n="pauseHint">Esc চাপলে আবার চালু হবে</p>
+        <div class="pause-actions">
+          <button id="btn-resume" class="btn primary big" data-i18n="resume">চালিয়ে যান</button>
+          <button id="btn-pause-change" class="btn ghost" data-i18n="changeVehicle">গাড়ি বদলান</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RESULT ============ -->
+    <section id="screen-result" class="screen result hidden">
+      <div class="receipt">
+        <div class="receipt-top">
+          <div class="stamp" data-i18n="caseFiled">মামলা দায়ের</div>
+          <h2 data-i18n="brand">মামলা খাই</h2>
+          <p id="result-sub"></p>
+        </div>
+        <ul id="receipt-list"></ul>
+        <div class="receipt-total"><span data-i18n="totalFine">মোট জরিমানা</span><b id="receipt-total">৳ ০</b></div>
+        <div class="receipt-stats" id="receipt-stats"></div>
+        <div class="receipt-actions">
+          <button id="btn-again" class="btn primary" data-i18n="rideAgain">আবার চালাই</button>
+          <button id="btn-change" class="btn ghost" data-i18n="changeVehicle">গাড়ি বদলান</button>
+        </div>
+      </div>
+    </section>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

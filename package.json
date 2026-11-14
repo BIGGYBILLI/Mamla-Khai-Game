@@ -1,0 +1,11 @@
+{
+  "name": "mamla-khai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Mamla Khai — a night traffic-violation arcade game set on 300 Feet, Dhaka.",
+  "type": "module",
+  "scripts": {
+    "dev": "node dev-server.mjs",
+    "start": "node dev-server.mjs"
+  }
+}
