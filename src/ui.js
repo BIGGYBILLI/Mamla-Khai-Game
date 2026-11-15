@@ -53,6 +53,7 @@ export class UI {
       soundBtn: $('btn-sound'),
       finesPanel: $('fines'),
       pauseOverlay: $('screen-pause'),
+      hudTop: document.querySelector('.hud-top'),
     };
 
     const saved = localStorage.getItem('mamla.lang');
@@ -61,6 +62,27 @@ export class UI {
     this.bind();
     this.applyLanguage();
     this.syncPauseHint();
+    this.trackHudHeight();
+  }
+
+  // Publish the real height of the HUD top bar so the fines card and toasts can
+  // sit below it instead of guessing at a fixed offset.
+  trackHudHeight() {
+    const top = this.el.hudTop;
+    if (!top) return;
+    const sync = () => {
+      const h = top.offsetHeight;
+      if (h > 0) document.documentElement.style.setProperty('--hud-top', h + 'px');
+    };
+    this.syncHudHeight = sync;
+    sync();
+    if (window.ResizeObserver) {
+      this.hudObserver = new ResizeObserver(sync);   // keep the ref: an unheld observer is collected
+      this.hudObserver.observe(top);
+    }
+    // rotation and browser chrome changes do not always reach the observer
+    window.addEventListener('resize', sync);
+    window.addEventListener('orientationchange', sync);
   }
 
   bind() {
@@ -135,6 +157,7 @@ export class UI {
 
   showHud() {
     this.setScreen('hud');
+    this.syncHudHeight?.();
     this.hidePause();
     this.lastLedgerVersion = -1;
     this.updateFines(this.game);
