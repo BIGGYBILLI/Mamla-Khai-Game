@@ -486,18 +486,16 @@ kbd {
 .icon-btn:hover { border-color: rgba(255, 255, 255, 0.3); }
 .icon-btn.off { opacity: 0.4; }
 .icon-btn.only-sm { display: none; }
-/* White button, dark glyph: readable on the night road at any size. */
+/* Dark button like its neighbours, white || glyph. */
 .icon-btn.pause-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  border-color: rgba(255, 255, 255, 0.92);
-  color: var(--ink);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
 }
-.icon-btn.pause-btn:hover { background: #fff; border-color: #fff; }
-.icon-btn.pause-btn svg { display: block; }
+.icon-btn.pause-btn svg {
+  display: block;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.35));
+}
 
 /* ================= pause ================= */
 .pause {
