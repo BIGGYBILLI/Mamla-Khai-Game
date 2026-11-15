@@ -80,9 +80,13 @@ export class UI {
       this.hudObserver = new ResizeObserver(sync);   // keep the ref: an unheld observer is collected
       this.hudObserver.observe(top);
     }
-    // rotation and browser chrome changes do not always reach the observer
+    // rotation and browser chrome changes do not always reach the observer,
+    // and a backgrounded tab pauses it entirely
     window.addEventListener('resize', sync);
     window.addEventListener('orientationchange', sync);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) sync();
+    });
   }
 
   bind() {
