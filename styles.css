@@ -798,7 +798,14 @@ kbd {
   .limit-chip, .dist-chip { padding: 2px 8px; font-size: 9.5px; }
   .hud-top .life { flex: 1 1 50%; order: 2; margin-top: 0; min-width: 0; }
   .hud-right { order: 3; margin-left: auto; }
-  .icon-btn { background: rgba(10, 12, 22, 0.8); border-color: rgba(255, 255, 255, 0.26); }
+  /* comfortable 44px tap targets on touch screens */
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+    background: rgba(10, 12, 22, 0.8);
+    border-color: rgba(255, 255, 255, 0.26);
+  }
   /* the card sits in the HUD's own flow, directly under the top bar */
   #hud { display: flex; flex-direction: column; align-items: stretch; }
   .hud-top { position: static; }
@@ -829,7 +836,6 @@ kbd {
 }
 
 @media (max-width: 620px) {
-  .icon-btn { width: 34px; height: 34px; }
   .setup { padding: 16px 12px; }
   .vehicle-row { grid-template-columns: repeat(3, 1fr); }
   .opt { padding: 10px 11px; }
@@ -837,6 +843,13 @@ kbd {
   .menu-inner { padding-top: 20px; }
   .receipt { padding: 16px 14px 18px; }
   .receipt-total b { font-size: 21px; }
+}
+
+@media (max-width: 400px) {
+  /* the 44px buttons need a little more room on the narrowest phones */
+  .hud-top { padding-left: 10px; padding-right: 10px; }
+  .hud-right { gap: 4px; }
+  .hud-top .life { flex-basis: 45%; }
 }
 
 @media (max-height: 500px) and (orientation: landscape) {
